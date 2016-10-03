@@ -5,12 +5,14 @@ import json
 
 
 #Constants
-shareToBuy = 'NVAX'
+shareToBuy = "NVAX"
 buyXShares = 60000
 
-print("The current settings are: \n Share to buy: %s \n Quantity to buy: %s \n Is this correct? Y/N") % (shareToBuy,buyXShares)
-changeValues = input("Y/N  ")
-
+#print("The current settings are: \n Share to buy: %s \n Quantity to buy: %s \n Is this correct? Y/N") % (shareToBuy,buyXShares)
+#changeValues = input("Y/N  ")
+#if changeValues == "N":
+#	shareToBuy = input("What share would you like to buy? ")
+#	buyXShares = input("How many %s shares would you like to buy? ") % (shareToBuy)
 
 #Open webdriver
 driver = webdriver.Chrome('/Users/Luke Puppo/ALScript/ALScript/ChromeDriver')  # Optional argument, if not specified will search path.
@@ -23,13 +25,13 @@ for x in range(0,15):
 
 #Opens trade window and sets nvax to trade plate
 def openTradeWindow():	
-	driver.get('http://www.marketwatch.com/game/wville-ap-econ/trade?view=detail&week=1&search=%s') % (shareToBuy)
+	driver.get('http://www.marketwatch.com/game/wville-ap-econ/trade?view=detail&week=1&search=NVAX') 
 	time.sleep(1)
 	driver.find_element_by_xpath("//*[@id='fakemaincontent']/section/div[2]/div/div[3]/div[2]/header/div[5]/button[2]").click()
 
 #Gets current price from google finance
 def getCurrentGooglePrice():
-	json_string = json.dumps(getQuotes('%s'), indent=2) % (shareToBuy)
+	json_string = json.dumps(getQuotes('NVAX'), indent=2)
 	parsed_json = json.loads(json_string)
 	GoogleNum = float(parsed_json[0]['LastTradePrice'])
 	print(GoogleNum)
@@ -69,7 +71,7 @@ def trade():
 	boughtShares = False
 	increasePrice = False
 	
-	while True
+	while True:
 		currGooPrice = getCurrentGooglePrice()
 		currMWPrice = getCurrentMarketWatchPrice()
 		if currGooPrice>currMWPrice:
@@ -83,7 +85,7 @@ def trade():
 			sellShares()
 			boughtShares = False
 			
-
+		time.sleep(1)
 		
 trade()		
 	
