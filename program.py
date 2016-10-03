@@ -1,7 +1,7 @@
 import time
 from selenium import webdriver
 
-driver = webdriver.Chrome('/Users/Luke/Desktop/ChromeDriver')  # Optional argument, if not specified will search path.
+driver = webdriver.Chrome('C:\Users\Luke Puppo\ALScript\ALScript\ChromeDriver')  # Optional argument, if not specified will search path.
 driver.get('http://www.marketwatch.com/game/');
 
 for x in range(0,10):
