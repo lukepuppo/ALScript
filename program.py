@@ -17,6 +17,16 @@ buyXShares = 60000
 #Open webdriver
 driver = webdriver.Chrome('/Users/Luke Puppo/ALScript/ALScript/ChromeDriver')  # Optional argument, if not specified will search path.
 driver.get('http://www.marketwatch.com/game/');
+time.sleep(1)
+driver.find_element_by_xpath("//*[@id='welcome']/div[1]/button[2]").click()
+time.sleep(1)
+
+#username.send_keys('a.shayylmao@gmail.com') #USERNAME
+#password = driver.find_element_by_id('password')
+#password.send_keys('shekels2') #PASSWORD
+#driver.find_element_by_xpath("//*[@id='submitButton']").click()
+#time.sleep(1)
+
 
 #Allow for user to login
 for x in range(0,15):
