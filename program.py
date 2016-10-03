@@ -34,7 +34,7 @@ def getCurrentGooglePrice():
 	json_string = json.dumps(getQuotes('NVAX'), indent=2)
 	parsed_json = json.loads(json_string)
 	GoogleNum = float(parsed_json[0]['LastTradePrice'])
-	print(GoogleNum)
+	print('Google price' +GoogleNum)
 	return GoogleNum
 	
 	
@@ -44,7 +44,7 @@ def getCurrentMarketWatchPrice():
 	driver.refresh()
 	MWString = driver.find_element_by_xpath("//*[@id='fakemaincontent']/section/div[2]/div/div[3]/div[2]/header/div[2]/p[1]/b/span[2]").text
 	MWnum = float(MWString)
-	print(MWnum)
+	print('MarketwatchPrice' + MWnum)
 	return MWnum
 	
 	
@@ -53,15 +53,16 @@ def buyShare():
 	openTradeWindow()
 	input = driver.find_element_by_xpath("//*[@id='trading']/div[6]/div[1]/div/div[2]/div/div/a/input")
 	input.send_keys(str(buyXShares)) #INSERT STOCK TO TRADE HERE
-	input.submit()
+	input.submit()	
 	driver.find_element_by_xpath("//*[@id='submitorder']/button").click()
+	print('Bought shares')
 	
 def sellShares():
 	openTradeWindow()
 	driver.get('http://www.marketwatch.com/game/wville-ap-econ/portfolio/Holdings')
 	driver.find_element_by_xpath("//*[@id='maincontent']/section[2]/div[1]/table/tbody/tr[1]/td[7]/button").click()
 	driver.find_element_by_xpath("//*[@id='submitorder']/button").click()
-	openTradeWindow()
+	print('Sold shares')
 	
 	
 	
@@ -81,9 +82,11 @@ def trade():
 		if lastBoughtPrice<currMWPrice and boughtShares == True:
 			sellShares()
 			boughtShares = False
+			print('Price went up! Money has been made!')
 		if lastBoughtPrice>currMWPrice and boughtShares == True:
 			sellShares()
 			boughtShares = False
+			print('Price went down! Minimized losses.')
 			
 		time.sleep(1)
 		
