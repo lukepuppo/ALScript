@@ -5,10 +5,11 @@ import json
 
 
 #Constants
-buy_x_shares = 60000
-numSharesInPort = 0
+shareToBuy = 'NVAX'
+buyXShares = 60000
 
-
+print("The current settings are: \n Share to buy: %s \n Quantity to buy: %s \n Is this correct? Y/N") % (shareToBuy,buyXShares)
+changeValues = input("Y/N  ")
 
 
 #Open webdriver
@@ -22,13 +23,13 @@ for x in range(0,15):
 
 #Opens trade window and sets nvax to trade plate
 def openTradeWindow():	
-	driver.get('http://www.marketwatch.com/game/wville-ap-econ/trade?view=detail&week=1&search=NVAX')
+	driver.get('http://www.marketwatch.com/game/wville-ap-econ/trade?view=detail&week=1&search=%s') % (shareToBuy)
 	time.sleep(1)
 	driver.find_element_by_xpath("//*[@id='fakemaincontent']/section/div[2]/div/div[3]/div[2]/header/div[5]/button[2]").click()
 
 #Gets current price from google finance
 def getCurrentGooglePrice():
-	json_string = json.dumps(getQuotes('NVAX'), indent=2)
+	json_string = json.dumps(getQuotes('%s'), indent=2) % (shareToBuy)
 	parsed_json = json.loads(json_string)
 	GoogleNum = float(parsed_json[0]['LastTradePrice'])
 	print(GoogleNum)
@@ -49,30 +50,42 @@ def getCurrentMarketWatchPrice():
 def buyShare():
 	openTradeWindow()
 	input = driver.find_element_by_xpath("//*[@id='trading']/div[6]/div[1]/div/div[2]/div/div/a/input")
-	input.send_keys('buy_x_shares') #INSERT STOCK TO TRADE HERE
+	input.send_keys(str(buyXShares)) #INSERT STOCK TO TRADE HERE
 	input.submit()
-	numSharesInPort = numSharesInPort + buy_x_shares
+	driver.find_element_by_xpath("//*[@id='submitorder']/button").click()
 	
 def sellShares():
 	openTradeWindow()
+	driver.get('http://www.marketwatch.com/game/wville-ap-econ/portfolio/Holdings')
+	driver.find_element_by_xpath("//*[@id='maincontent']/section[2]/div[1]/table/tbody/tr[1]/td[7]/button").click()
+	driver.find_element_by_xpath("//*[@id='submitorder']/button").click()
+	openTradeWindow()
+	
 	
 	
 def trade():
-	currGooPrice = getCurrentGooglePrice()
-	currMWPrice = getCurrentMarketWatchPrice()
+	openTradeWindow()
 	lastBoughtPrice = 0
 	boughtShares = False
 	increasePrice = False
 	
-	
-	if currGooPrice>currMWPrice:
-		buyShares()
-		lastBoughtPrice = getCurrentMarketWatchPrice()
-		boughtShares = True
-	if lastBoughtPrice<getCurrentMarketWatchPrice() and boughtShares == True:
-		sellShares()
-		boughtShares = False
+	while True
+		currGooPrice = getCurrentGooglePrice()
+		currMWPrice = getCurrentMarketWatchPrice()
+		if currGooPrice>currMWPrice:
+			buyShares()
+			lastBoughtPrice = currMWPrice
+			boughtShares = True
+		if lastBoughtPrice<currMWPrice and boughtShares == True:
+			sellShares()
+			boughtShares = False
+		if lastBoughtPrice>currMWPrice and boughtShares == True:
+			sellShares()
+			boughtShares = False
+			
+
 		
+trade()		
 	
 	
 	
