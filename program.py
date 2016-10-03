@@ -19,19 +19,21 @@ driver = webdriver.Chrome('/Users/Luke Puppo/ALScript/ALScript/ChromeDriver')  #
 driver.get('http://www.marketwatch.com/game/');
 time.sleep(1)
 driver.find_element_by_xpath("//*[@id='welcome']/div[1]/button[2]").click()
-time.sleep(1)
 
-#username.send_keys('a.shayylmao@gmail.com') #USERNAME
-#password = driver.find_element_by_id('password')
-#password.send_keys('shekels2') #PASSWORD
-#driver.find_element_by_xpath("//*[@id='submitButton']").click()
-#time.sleep(1)
+
+driver.get('https://id.marketwatch.com/access/50eb2d087826a77e5d000001/latest/login_standalone.html?url=http%3A%2F%2Fwww.marketwatch.com%2Fuser%2Flogin%2Fstatus');
+username = driver.find_element_by_id("username")
+username.send_keys("a.shayylmao@gmail.com") #USERNAME
+password = driver.find_element_by_id("password")
+password.send_keys("shekels2") #PASSWORD
+driver.find_element_by_xpath("//*[@id='submitButton']").click()
+time.sleep(1)
 
 
 #Allow for user to login
-for x in range(0,15):
-	time.sleep(1)
-	print ("Time left to login: " + str(15-x))
+#for x in range(0,15):
+#	time.sleep(1)
+#	print ("Time left to login: " + str(15-x))
 
 #Opens trade window and sets nvax to trade plate
 def openTradeWindow():	
@@ -44,7 +46,7 @@ def getCurrentGooglePrice():
 	json_string = json.dumps(getQuotes('NVAX'), indent=2)
 	parsed_json = json.loads(json_string)
 	GoogleNum = float(parsed_json[0]['LastTradePrice'])
-	print('Google price' +GoogleNum)
+	print('Google price: ' + str(GoogleNum))
 	return GoogleNum
 	
 	
@@ -54,7 +56,7 @@ def getCurrentMarketWatchPrice():
 	driver.refresh()
 	MWString = driver.find_element_by_xpath("//*[@id='fakemaincontent']/section/div[2]/div/div[3]/div[2]/header/div[2]/p[1]/b/span[2]").text
 	MWnum = float(MWString)
-	print('MarketwatchPrice' + MWnum)
+	print('Marketwatch Price: ' + str(MWnum))
 	return MWnum
 	
 	
