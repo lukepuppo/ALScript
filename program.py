@@ -5,8 +5,8 @@ import json
 
 
 #Constants
-shareToBuy = "NVAX"
-buyXShares = 60000
+shareToBuy = "WLL"
+buyXShares = 15000
 
 #print("The current settings are: \n Share to buy: %s \n Quantity to buy: %s \n Is this correct? Y/N") % (shareToBuy,buyXShares)
 #changeValues = input("Y/N  ")
@@ -15,7 +15,7 @@ buyXShares = 60000
 #	buyXShares = input("How many %s shares would you like to buy? ") % (shareToBuy)
 
 #Open webdriver
-driver = webdriver.Chrome('/Users/Luke Puppo/ALScript/ALScript/ChromeDriver')  # Optional argument, if not specified will search path.
+driver = webdriver.Chrome('/Users/Luke/Desktop/ChromeDriver')  # Optional argument, if not specified will search path.
 driver.get('http://www.marketwatch.com/game/');
 time.sleep(1)
 driver.find_element_by_xpath("//*[@id='welcome']/div[1]/button[2]").click()
@@ -30,20 +30,15 @@ driver.find_element_by_xpath("//*[@id='submitButton']").click()
 time.sleep(1)
 
 
-#Allow for user to login
-#for x in range(0,15):
-#	time.sleep(1)
-#	print ("Time left to login: " + str(15-x))
-
-#Opens trade window and sets nvax to trade plate
+#Opens trade window and sets WLL to trade plate
 def openTradeWindow():	
-	driver.get('http://www.marketwatch.com/game/wville-ap-econ/trade?view=detail&week=1&search=NVAX') 
-	time.sleep(1)
-	driver.find_element_by_xpath("//*[@id='fakemaincontent']/section/div[2]/div/div[3]/div[2]/header/div[5]/button[2]").click()
+	driver.get('http://www.marketwatch.com/game/wville-ap-econ/trade?view=detail&week=1&search=WLL') 
+	time.sleep(.2)
+	
 
 #Gets current price from google finance
 def getCurrentGooglePrice():
-	json_string = json.dumps(getQuotes('NVAX'), indent=2)
+	json_string = json.dumps(getQuotes('WLL'), indent=2)
 	parsed_json = json.loads(json_string)
 	GoogleNum = float(parsed_json[0]['LastTradePrice'])
 	print('Google price: ' + str(GoogleNum))
@@ -53,7 +48,6 @@ def getCurrentGooglePrice():
 #Gets current price from marketwatch
 def getCurrentMarketWatchPrice():
 	openTradeWindow()
-	driver.refresh()
 	MWString = driver.find_element_by_xpath("//*[@id='fakemaincontent']/section/div[2]/div/div[3]/div[2]/header/div[2]/p[1]/b/span[2]").text
 	MWnum = float(MWString)
 	print('Marketwatch Price: ' + str(MWnum))
@@ -61,49 +55,58 @@ def getCurrentMarketWatchPrice():
 	
 	
 #Buys shares	
-def buyShare():
+def buyShares():
 	openTradeWindow()
+	driver.find_element_by_xpath("//*[@id='fakemaincontent']/section/div[2]/div/div[3]/div[2]/header/div[5]/button[2]").click()
 	input = driver.find_element_by_xpath("//*[@id='trading']/div[6]/div[1]/div/div[2]/div/div/a/input")
-	input.send_keys(str(buyXShares)) #INSERT STOCK TO TRADE HERE
-	input.submit()	
+	input.send_keys(str(buyXShares)) #INSERT STOCK TO TRADE HERE	
 	driver.find_element_by_xpath("//*[@id='submitorder']/button").click()
 	print('Bought shares')
 	
-def sellShares():
+def sellSharesLoss(currPrice):
 	openTradeWindow()
 	driver.get('http://www.marketwatch.com/game/wville-ap-econ/portfolio/Holdings')
 	driver.find_element_by_xpath("//*[@id='maincontent']/section[2]/div[1]/table/tbody/tr[1]/td[7]/button").click()
+	time.sleep(1)	
 	driver.find_element_by_xpath("//*[@id='submitorder']/button").click()
 	print('Sold shares')
 	
+	
+def sellSharesGain(currPrice):
+	openTradeWindow()
+	driver.get('http://www.marketwatch.com/game/wville-ap-econ/portfolio/Holdings')
+	driver.find_element_by_xpath("//*[@id='maincontent']/section[2]/div[1]/table/tbody/tr[1]/td[7]/button").click()
+	time.sleep(1)
+	driver.find_element_by_xpath("//*[@id='submitorder']/button").click()
+	print('Sold shares')
+
 	
 	
 def trade():
 	openTradeWindow()
 	lastBoughtPrice = 0
 	boughtShares = False
-	increasePrice = False
+	dontBuyAnyMore = False
 	
 	while True:
 		currGooPrice = getCurrentGooglePrice()
 		currMWPrice = getCurrentMarketWatchPrice()
-		if currGooPrice>currMWPrice:
+		if currGooPrice>currMWPrice and dontBuyAnyMore == False:
 			buyShares()
 			lastBoughtPrice = currMWPrice
 			boughtShares = True
-		if lastBoughtPrice<currMWPrice and boughtShares == True:
-			sellShares()
+			dontBuyAnyMore = True
+		elif lastBoughtPrice<currMWPrice and boughtShares == True:
+			sellSharesGain(currMWPrice)
 			boughtShares = False
+			dontBuyAnyMore = False
 			print('Price went up! Money has been made!')
-		if lastBoughtPrice>currMWPrice and boughtShares == True:
-			sellShares()
+		elif lastBoughtPrice>currMWPrice and boughtShares == True:
+			sellSharesLoss(currMWPrice)
 			boughtShares = False
+			dontBuyAnyMore = False
 			print('Price went down! Minimized losses.')
 			
-		time.sleep(1)
+		time.sleep(.3)
 		
 trade()		
-	
-	
-	
-	
