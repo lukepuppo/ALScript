@@ -14,21 +14,20 @@ if changeValues == "N":
 	shareToBuy = input("What share would you like to trade? ")
 	buyXShares = input("How many %s shares would you like to trade? " % (shareToBuy))
 
-	
-def startUp():
-	#Open webdriver
-	driver = webdriver.Chrome('/Users/Luke/Desktop/ChromeDriver')  # Optional argument, if not specified will search path.
-	driver.get('http://www.marketwatch.com/game/');
-	time.sleep(1)
-	driver.find_element_by_xpath("//*[@id='welcome']/div[1]/button[2]").click()
 
-	driver.get('https://id.marketwatch.com/access/50eb2d087826a77e5d000001/latest/login_standalone.html?url=http%3A%2F%2Fwww.marketwatch.com%2Fuser%2Flogin%2Fstatus');
-	username = driver.find_element_by_id("username")
-	username.send_keys("a.shayylmao@gmail.com") #USERNAME
-	password = driver.find_element_by_id("password")
-	password.send_keys("shekels2") #PASSWORD
-	driver.find_element_by_xpath("//*[@id='submitButton']").click()
-	time.sleep(1)
+#Open webdriver
+driver = webdriver.Chrome('/Users/Luke Puppo/AlScript/AlScript/ChromeDriver')  #/Users/Luke Puppo/AlScript/AlScript/ChromeDriver    /Users/Luke/Desktop/ChromeDriver
+driver.get('http://www.marketwatch.com/game/');
+time.sleep(1)
+driver.find_element_by_xpath("//*[@id='welcome']/div[1]/button[2]").click()
+
+driver.get('https://id.marketwatch.com/access/50eb2d087826a77e5d000001/latest/login_standalone.html?url=http%3A%2F%2Fwww.marketwatch.com%2Fuser%2Flogin%2Fstatus');
+username = driver.find_element_by_id("username")
+username.send_keys("a.shayylmao@gmail.com") #USERNAME
+password = driver.find_element_by_id("password")
+password.send_keys("shekels2") #PASSWORD
+driver.find_element_by_xpath("//*[@id='submitButton']").click()
+time.sleep(1)
 
 
 #Opens trade window and sets WLL to trade plate
@@ -64,7 +63,6 @@ def buyShares():
 	driver.find_element_by_xpath("//*[@id='submitorder']/button").click()
 	print('Bought shares')
 
-	
 
 def sellShares():
 	openTradeWindow()
@@ -74,7 +72,6 @@ def sellShares():
 	driver.find_element_by_xpath("//*[@id='submitorder']/button").click()
 	print('Sold shares')
 
-	
 	
 def trade():
 	openTradeWindow()
@@ -101,7 +98,4 @@ def trade():
 			dontBuyAnyMore = False
 			print('Price went down! Minimized losses.')
 		
-	
-
-startUp()	
 trade()		
