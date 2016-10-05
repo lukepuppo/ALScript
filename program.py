@@ -8,26 +8,27 @@ import json
 shareToBuy = "WLL"
 buyXShares = 15000
 
-#print("The current settings are: \n Share to buy: %s \n Quantity to buy: %s \n Is this correct? Y/N") % (shareToBuy,buyXShares)
-#changeValues = input("Y/N  ")
-#if changeValues == "N":
-#	shareToBuy = input("What share would you like to buy? ")
-#	buyXShares = input("How many %s shares would you like to buy? ") % (shareToBuy)
+print('The current settings are: \n Share to trade: %s \n Quantity to trade: %s \n Is this correct? Y/N' % (shareToBuy,buyXShares))
+changeValues = input("Y/N  ")
+if changeValues == "N":
+	shareToBuy = input("What share would you like to trade? ")
+	buyXShares = input("How many %s shares would you like to trade? " % (shareToBuy))
 
-#Open webdriver
-driver = webdriver.Chrome('/Users/Luke/Desktop/ChromeDriver')  # Optional argument, if not specified will search path.
-driver.get('http://www.marketwatch.com/game/');
-time.sleep(1)
-driver.find_element_by_xpath("//*[@id='welcome']/div[1]/button[2]").click()
+	
+def startUp():
+	#Open webdriver
+	driver = webdriver.Chrome('/Users/Luke/Desktop/ChromeDriver')  # Optional argument, if not specified will search path.
+	driver.get('http://www.marketwatch.com/game/');
+	time.sleep(1)
+	driver.find_element_by_xpath("//*[@id='welcome']/div[1]/button[2]").click()
 
-
-driver.get('https://id.marketwatch.com/access/50eb2d087826a77e5d000001/latest/login_standalone.html?url=http%3A%2F%2Fwww.marketwatch.com%2Fuser%2Flogin%2Fstatus');
-username = driver.find_element_by_id("username")
-username.send_keys("a.shayylmao@gmail.com") #USERNAME
-password = driver.find_element_by_id("password")
-password.send_keys("shekels2") #PASSWORD
-driver.find_element_by_xpath("//*[@id='submitButton']").click()
-time.sleep(1)
+	driver.get('https://id.marketwatch.com/access/50eb2d087826a77e5d000001/latest/login_standalone.html?url=http%3A%2F%2Fwww.marketwatch.com%2Fuser%2Flogin%2Fstatus');
+	username = driver.find_element_by_id("username")
+	username.send_keys("a.shayylmao@gmail.com") #USERNAME
+	password = driver.find_element_by_id("password")
+	password.send_keys("shekels2") #PASSWORD
+	driver.find_element_by_xpath("//*[@id='submitButton']").click()
+	time.sleep(1)
 
 
 #Opens trade window and sets WLL to trade plate
@@ -62,21 +63,14 @@ def buyShares():
 	input.send_keys(str(buyXShares)) #INSERT STOCK TO TRADE HERE	
 	driver.find_element_by_xpath("//*[@id='submitorder']/button").click()
 	print('Bought shares')
+
 	
-def sellSharesLoss(currPrice):
+
+def sellShares():
 	openTradeWindow()
 	driver.get('http://www.marketwatch.com/game/wville-ap-econ/portfolio/Holdings')
-	driver.find_element_by_xpath("//*[@id='maincontent']/section[2]/div[1]/table/tbody/tr[1]/td[7]/button").click()
-	time.sleep(1)	
-	driver.find_element_by_xpath("//*[@id='submitorder']/button").click()
-	print('Sold shares')
-	
-	
-def sellSharesGain(currPrice):
-	openTradeWindow()
-	driver.get('http://www.marketwatch.com/game/wville-ap-econ/portfolio/Holdings')
-	driver.find_element_by_xpath("//*[@id='maincontent']/section[2]/div[1]/table/tbody/tr[1]/td[7]/button").click()
-	time.sleep(1)
+	driver.find_element_by_xpath("//*[@id='maincontent']/section[2]/div[1]/table/tbody/tr/td[7]/button").click()
+	time.sleep(.8)
 	driver.find_element_by_xpath("//*[@id='submitorder']/button").click()
 	print('Sold shares')
 
@@ -88,7 +82,7 @@ def trade():
 	boughtShares = False
 	dontBuyAnyMore = False
 	
-	while True:
+	while :
 		currGooPrice = getCurrentGooglePrice()
 		currMWPrice = getCurrentMarketWatchPrice()
 		if currGooPrice>currMWPrice and dontBuyAnyMore == False:
@@ -96,17 +90,18 @@ def trade():
 			lastBoughtPrice = currMWPrice
 			boughtShares = True
 			dontBuyAnyMore = True
-		elif lastBoughtPrice<currMWPrice and boughtShares == True:
-			sellSharesGain(currMWPrice)
+		elif lastBoughtPrice<(lastBoughtPrice+.01) and boughtShares == True:
+			sellShares()
 			boughtShares = False
 			dontBuyAnyMore = False
 			print('Price went up! Money has been made!')
 		elif lastBoughtPrice>currMWPrice and boughtShares == True:
-			sellSharesLoss(currMWPrice)
+			sellShares()
 			boughtShares = False
 			dontBuyAnyMore = False
 			print('Price went down! Minimized losses.')
-			
-		time.sleep(.3)
 		
+	
+
+startUp()	
 trade()		
