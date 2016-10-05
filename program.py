@@ -1,5 +1,6 @@
 import time
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from googlefinance import getQuotes
 import json
 
@@ -8,18 +9,23 @@ import json
 shareToBuy = "WLL"
 buyXShares = 15000
 
-print('The current settings are: \n Share to trade: %s \n Quantity to trade: %s \n Is this correct? Y/N' % (shareToBuy,buyXShares))
-changeValues = input("Y/N  ")
-if changeValues == "N":
-	shareToBuy = input("What share would you like to trade? ")
-	buyXShares = input("How many %s shares would you like to trade? " % (shareToBuy))
-
+changeValues = True
+while changeValues == True:
+	print('The current settings are: \n Share to trade: %s \n Quantity to trade: %s \n Is this correct? Y/N' % (shareToBuy,buyXShares))
+	changeValues = input("Y/N  ")
+	if changeValues == "N":
+		shareToBuy = input("What share would you like to trade? ")
+		buyXShares = input("How many %s shares would you like to trade? " % (shareToBuy))
+		changeValues = False
+		print('The current settings are: \n Share to trade: %s \n Quantity to trade: %s' % (shareToBuy,buyXShares))
+	
 
 #Open webdriver
 driver = webdriver.Chrome('/Users/Luke Puppo/AlScript/AlScript/ChromeDriver')  #/Users/Luke Puppo/AlScript/AlScript/ChromeDriver    /Users/Luke/Desktop/ChromeDriver
-driver.get('http://www.marketwatch.com/game/');
-time.sleep(1)
-driver.find_element_by_xpath("//*[@id='welcome']/div[1]/button[2]").click()
+chop = webdriver.ChromeOptions()
+chop.add_extension('extension_1_9_10.crx')
+driver = webdriver.Chrome(chrome_options = chop)
+
 
 driver.get('https://id.marketwatch.com/access/50eb2d087826a77e5d000001/latest/login_standalone.html?url=http%3A%2F%2Fwww.marketwatch.com%2Fuser%2Flogin%2Fstatus');
 username = driver.find_element_by_id("username")
@@ -32,13 +38,13 @@ time.sleep(1)
 
 #Opens trade window and sets WLL to trade plate
 def openTradeWindow():	
-	driver.get('http://www.marketwatch.com/game/wville-ap-econ/trade?view=detail&week=1&search=WLL') 
-	time.sleep(.2)
+	driver.get('http://www.marketwatch.com/game/wville-ap-econ/trade?view=detail&week=1&search=%s' % (shareToBuy)) 
+	#time.sleep(.2)
 	
 
 #Gets current price from google finance
 def getCurrentGooglePrice():
-	json_string = json.dumps(getQuotes('WLL'), indent=2)
+	json_string = json.dumps(getQuotes('%s' % (shareToBuy)), indent=2)
 	parsed_json = json.loads(json_string)
 	GoogleNum = float(parsed_json[0]['LastTradePrice'])
 	print('Google price: ' + str(GoogleNum))
@@ -68,7 +74,7 @@ def sellShares():
 	openTradeWindow()
 	driver.get('http://www.marketwatch.com/game/wville-ap-econ/portfolio/Holdings')
 	driver.find_element_by_xpath("//*[@id='maincontent']/section[2]/div[1]/table/tbody/tr/td[7]/button").click()
-	time.sleep(.8)
+	time.sleep(.5)
 	driver.find_element_by_xpath("//*[@id='submitorder']/button").click()
 	print('Sold shares')
 
