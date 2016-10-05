@@ -82,7 +82,7 @@ def trade():
 	boughtShares = False
 	dontBuyAnyMore = False
 	
-	while :
+	while True:
 		currGooPrice = getCurrentGooglePrice()
 		currMWPrice = getCurrentMarketWatchPrice()
 		if currGooPrice>currMWPrice and dontBuyAnyMore == False:
