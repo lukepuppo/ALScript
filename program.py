@@ -63,6 +63,7 @@ def getCurrentMarketWatchPrice():
 #Buys shares	
 def buyShares():
 	openTradeWindow()
+	time.sleep(.5)
 	driver.find_element_by_xpath("//*[@id='fakemaincontent']/section/div[2]/div/div[3]/div[2]/header/div[5]/button[2]").click()
 	input = driver.find_element_by_xpath("//*[@id='trading']/div[6]/div[1]/div/div[2]/div/div/a/input")
 	input.send_keys(str(buyXShares)) #INSERT STOCK TO TRADE HERE	
@@ -74,8 +75,8 @@ def sellShares():
 	openTradeWindow()
 	driver.get('http://www.marketwatch.com/game/wville-ap-econ/portfolio/Holdings')
 	driver.find_element_by_xpath("//*[@id='maincontent']/section[2]/div[1]/table/tbody/tr/td[7]/button").click()
-	time.sleep(.5)
-	driver.find_element_by_xpath("//*[@id='submitorder']/button").click()
+	time.sleep(.9)
+	driver.find_element_by_xpath('//*[@id="submitorder"]/button').click()
 	print('Sold shares')
 
 	
